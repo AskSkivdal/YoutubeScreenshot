@@ -1,7 +1,6 @@
 // ==UserScript==
 // @name         Youtube screenshot
-// @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      1.1
 // @description  Adds screenshot button to youtube
 // @author       Fungideon
 // @match        http://www.youtube.com/watch?*
@@ -16,7 +15,7 @@
 
     function screenshotYoutube() {
         var elements = document.getElementsByTagName('VIDEO');
-        if (elements.length !== 1) {
+        if (elements.length === 0) {
             alert('Failed to find the video element');
             return;
         }
@@ -29,6 +28,8 @@
         var video = elements[0];
         var width = video.videoWidth;
         var height = video.videoHeight;
+        var videoid = getVideoId();
+        var time = document.getElementsByClassName('ytp-time-current')[0].innerHTML.split(':').join('.');
 
         var canvas = ytp_screenshot_getCanvas();
         canvas.width = width;
@@ -37,9 +38,28 @@
         var ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, width, height);
 
+        //"ytp-screenshot"
         canvas.toBlob(function(blob) {
-            saveAs(blob, "ytp-screenshot.png");
+            saveAs(blob, `ytp_${videoid}_snapshot_${time}.png`);
         });
+    }
+
+    function getVideoId() {
+        var videoid = '';
+
+        for (var text of window.location.search.split('&')) {
+            if (text.indexOf('?v=') !== -1) {
+                videoid = text.replace('?v=', '');
+                break;
+            }
+
+            if (text.indexOf('v=') !== -1) {
+                videoid = text.replace('v=', '');
+                break;
+            }
+        }
+
+        return videoid;
     }
 
     function ytp_screenshot_getCanvas() {
@@ -78,13 +98,13 @@
         button.style.border = 'none';
         button.style.color = 'white';
         button.style.verticalAlign = 'top';
-        button.style.fontSize = '18px';
+        button.style.fontSize = '150%';
         button.style.textAlign = 'center';
         button.className = 'ytp-button';
         button.id = 'ytp-screenshot-button';
 
-        var controls = document.getElementsByClassName('ytp-right-controls')[0];
-        controls.insertBefore(button, controls.firstChild);
+        var controls = document.getElementsByClassName('ytp-right-controls');
+        controls[0].insertBefore(button, controls[0].firstChild);
     }
 
     ytp_screenshot_init();
