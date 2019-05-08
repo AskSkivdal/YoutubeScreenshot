@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Youtube screenshot
-// @version      1.1
+// @version      1.2
 // @description  Adds screenshot button to youtube
 // @author       Fungideon
 // @match        http://www.youtube.com/watch?*
@@ -38,7 +38,6 @@
         var ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, width, height);
 
-        //"ytp-screenshot"
         canvas.toBlob(function(blob) {
             saveAs(blob, `ytp_${videoid}_snapshot_${time}.png`);
         });
@@ -79,7 +78,7 @@
     function ytp_screenshot_init() {
         if (typeof saveAs === 'undefined') {
             var s = document.createElement('SCRIPT');
-            s.src = 'https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.min.js';
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js';
             s.id = 'ytp-screenshot-saveas';
             s.type = 'text/javascript';
             document.getElementsByTagName('head')[0].appendChild(s);
