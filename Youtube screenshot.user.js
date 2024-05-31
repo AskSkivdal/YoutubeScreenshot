@@ -104,6 +104,13 @@
 
         var controls = document.getElementsByClassName('ytp-right-controls');
         controls[0].insertBefore(button, controls[0].firstChild);
+
+        document.addEventListener("keypress", (e) => {
+            // Take a screenshot when the s key is pressed.
+            if (e.keyCode === 115) {
+                screenshotYoutube()
+            }
+        })
     }
 
     ytp_screenshot_init();
